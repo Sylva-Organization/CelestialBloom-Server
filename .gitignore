@@ -4,4 +4,4 @@ dist
 *.js
 *.js.map
 *.d.ts
-test-connection.ts
+test_connection.ts
