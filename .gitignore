@@ -4,4 +4,6 @@ dist
 *.js
 *.js.map
 *.d.ts
+test_connection.ts
 test-connection.ts
+testModel.ts
