@@ -3,15 +3,14 @@ import { Op } from "sequelize";
 import { UserModel } from "../models/UserModel.js";
 import { PostModel } from "../models/PostModel.js";
 
-// Get (sort para que salgan los mas nuevos primero linea 13)
+// Get 
 export const getAllUsers = async (req: Request , res: Response) => {
   try {
     const page = Math.max(1, Number(req.query["page"] as string) || 1);
     const limit = Math.min(100, Number(req.query["limit"] as string) || 20);
     const offset = (page - 1) * limit;
     const search = (req.query["search"] as string) || "";
-    const sort = (String(req.query["sort"] || "").toLowerCase() === "asc") ? "ASC" : "DESC";
-
+    
     const whereCondition = search
       ? {
           [Op.or]: [
