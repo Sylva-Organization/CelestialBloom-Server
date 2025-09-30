@@ -11,10 +11,11 @@ import {
 import type { PostAttributes, PostCreationAttributes } from "../types/post.js";
 import type { UserModel } from './UserModel.js';
 import { UserModel as UserModelClass } from './UserModel.js';
+import { CategoryModel } from "./CategoryModel.js";
+import { CategoryModel as CategoryModelClass } from "./CategoryModel.js";
 
 @Table({
     tableName: "posts",
-    timestamps: true,
 })
 export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
     @PrimaryKey
@@ -41,4 +42,12 @@ export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
 
     @BelongsTo(() => UserModelClass, "author_id")
     author!: UserModel;
+
+    @ForeignKey(() => CategoryModelClass)
+    @AllowNull(false)
+    @Column
+    category_id!: number;
+
+    @BelongsTo(() => CategoryModelClass, "category_id")
+    category!: CategoryModel
 }
