@@ -7,6 +7,8 @@ import {
     AllowNull,
     ForeignKey,
     BelongsTo,
+    Index,
+    Unique,
 } from "sequelize-typescript";
 import type { SubcategoryAttributes, SubcategoryCreationAttributes } from "../types/subcategory.js";
 import type { CategoryModel } from "./CategoryModel.js";
@@ -26,11 +28,13 @@ export class SubcategoryModel extends Model<SubcategoryAttributes, SubcategoryCr
     @Column({ unique: true })
     name!: string;
 
+    @Index
     @ForeignKey(() => CategoryModelClass)
     @AllowNull(false)
+    @Unique('uniq_subcat_per_category')
     @Column
     category_id!: number;
 
     @BelongsTo(() => CategoryModelClass, "category_id")
-    category!: CategoryModel
+    category!: CategoryModel;
 }

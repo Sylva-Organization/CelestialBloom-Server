@@ -25,10 +25,7 @@ export class CategoryModel extends Model<CategoryAttributes, CategoryCreationAtt
     id!: number;
 
     @AllowNull(false)
-    @Column({
-        unique: true,
-        type: DataType.ENUM('botanical', 'astronomy'),
-    })
+    @Column({ unique: true })
     name!: string;
 
     @HasMany(() => PostModelClass)

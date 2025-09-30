@@ -7,6 +7,7 @@ import {
     AllowNull,
     ForeignKey,
     BelongsTo,
+    Index,
 } from "sequelize-typescript";
 import type { PostAttributes, PostCreationAttributes } from "../types/post.js";
 import type { UserModel } from './UserModel.js';
@@ -43,11 +44,12 @@ export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
     @BelongsTo(() => UserModelClass, "author_id")
     author!: UserModel;
 
+    @Index
     @ForeignKey(() => CategoryModelClass)
     @AllowNull(false)
     @Column
     category_id!: number;
 
     @BelongsTo(() => CategoryModelClass, "category_id")
-    category!: CategoryModel
+    category!: CategoryModel;
 }
