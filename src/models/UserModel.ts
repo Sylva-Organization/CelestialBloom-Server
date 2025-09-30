@@ -14,6 +14,7 @@ import { PostModel as PostModelClass } from './PostModel.js';
 
 @Table({
     tableName: "users",
+    paranoid: true
 })
 export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     @PrimaryKey

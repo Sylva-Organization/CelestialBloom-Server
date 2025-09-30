@@ -17,6 +17,7 @@ import { CategoryModel as CategoryModelClass } from "./CategoryModel.js";
 
 @Table({
     tableName: "posts",
+    paranoid: true
 })
 export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
     @PrimaryKey

@@ -15,7 +15,8 @@ import { SubcategoryModel } from "./SubcategoryModel.js";
 import { SubcategoryModel as SubcategoryModelClass } from "./SubcategoryModel.js";
 
 @Table({
-    tableName: "categories"
+    tableName: "categories",
+    paranoid: true
 })
 
 export class CategoryModel extends Model<CategoryAttributes, CategoryCreationAttributes> {
