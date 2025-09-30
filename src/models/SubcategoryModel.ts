@@ -35,6 +35,10 @@ export class SubcategoryModel extends Model<SubcategoryAttributes, SubcategoryCr
     @Column
     category_id!: number;
 
-    @BelongsTo(() => CategoryModelClass, "category_id")
+    @BelongsTo(() => CategoryModelClass, {
+        foreignKey: 'category_id',
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE'
+    })
     category!: CategoryModel;
 }

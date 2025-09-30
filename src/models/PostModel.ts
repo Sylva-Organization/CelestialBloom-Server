@@ -50,6 +50,10 @@ export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
     @Column
     category_id!: number;
 
-    @BelongsTo(() => CategoryModelClass, "category_id")
+    @BelongsTo(() => CategoryModelClass, {
+        foreignKey: 'category_id',
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE'
+    })
     category!: CategoryModel;
 }
