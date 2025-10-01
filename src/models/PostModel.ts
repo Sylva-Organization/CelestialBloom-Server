@@ -7,14 +7,17 @@ import {
     AllowNull,
     ForeignKey,
     BelongsTo,
+    Index,
 } from "sequelize-typescript";
 import type { PostAttributes, PostCreationAttributes } from "../types/post.js";
 import type { UserModel } from './UserModel.js';
 import { UserModel as UserModelClass } from './UserModel.js';
+import { CategoryModel } from "./CategoryModel.js";
+import { CategoryModel as CategoryModelClass } from "./CategoryModel.js";
 
 @Table({
     tableName: "posts",
-    timestamps: true,
+    paranoid: true
 })
 export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
     @PrimaryKey
@@ -41,4 +44,17 @@ export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
 
     @BelongsTo(() => UserModelClass, "author_id")
     author!: UserModel;
+
+    @Index
+    @ForeignKey(() => CategoryModelClass)
+    @AllowNull(false)
+    @Column
+    category_id!: number;
+
+    @BelongsTo(() => CategoryModelClass, {
+        foreignKey: 'category_id',
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE'
+    })
+    category!: CategoryModel;
 }
