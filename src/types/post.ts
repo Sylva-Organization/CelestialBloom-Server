@@ -4,6 +4,7 @@ export interface PostAttributes {
     content: string;
     image: string;
     author_id: number;
+    category_id: number;
 }
 
 export type PostCreationAttributes = {
@@ -11,4 +12,5 @@ export type PostCreationAttributes = {
     content: string;
     image: string;
     author_id: number;
+    category_id: number;
 };

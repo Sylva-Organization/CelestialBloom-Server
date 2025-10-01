@@ -2,6 +2,8 @@ import { Sequelize } from 'sequelize-typescript';
 import configData from '../config/config.js';
 import { UserModel } from "../models/UserModel.js";
 import { PostModel } from "../models/PostModel.js";
+import { CategoryModel } from '../models/CategoryModel.js';
+import { SubcategoryModel } from '../models/SubcategoryModel.js';
 
 const dbConfig = configData.development;
 
@@ -16,7 +18,7 @@ export const db_connection = new Sequelize({
         timestamps: true,
         underscored: true,
     },
-    models: [UserModel, PostModel],
+    models: [UserModel, PostModel, CategoryModel, SubcategoryModel],
 });
 
 export default db_connection;
