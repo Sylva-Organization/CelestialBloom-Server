@@ -23,19 +23,22 @@
   "homepage": "https://github.com/Sylva-Organization/CelestialBloom-Server#readme",
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.1",
     "eslint": "^9.36.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.44.1"
   },
   "dependencies": {
     "@sequelize/mysql": "^7.0.0-alpha.46",
-    "@types/cors": "^2.8.19",
-    "dotenv": "^17.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mysql2": "^3.15.1",
+    "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.7",
     "sequelize-typescript": "^2.1.6",
     "sequelizejs-decorators": "^6.1.7"
