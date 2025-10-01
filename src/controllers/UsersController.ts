@@ -118,3 +118,20 @@ export const updateUser = async (req: Request<{ id: string }>, res: Response) =>
   }
 };
 
+export const deleteUser = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+
+    const user = await UserModel.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await UserModel.destroy({ where: { id } });
+
+    return res.status(200).json({ message: "The user has been deleted successfully!" });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
