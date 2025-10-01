@@ -53,42 +53,6 @@ export const getOneUser = async (req: Request<{ id: string }>, res: Response) =>
     }
 };
 
-//create
-export const createUser = async (req: Request, res: Response) => {
-    try {
-        const { first_name, last_name, email, password, nick_name } = req.body;
-
-        if (!first_name || !last_name || !email || !password || !nick_name) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        const exists = await UserModel.findOne({
-            where: { [Op.or]: [{ email }, { nick_name }] },
-        });
-        if (exists) {
-            return res.status(400).json({ message: "Email or nickname already exists" });
-        }
-
-        const user = await UserModel.create({
-            first_name,
-            last_name,
-            email,
-            password, 
-            nick_name,
-          
-        });
-
-        // Responder sin que se vea la contraseña
-        const safe = await UserModel.findByPk(user.id, {
-            attributes: { exclude: ["password"] },
-        });
-
-        return res.status(201).json({ data: safe });
-    } catch (error: any) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
 export const updateUser = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const id = Number(req.params.id);
