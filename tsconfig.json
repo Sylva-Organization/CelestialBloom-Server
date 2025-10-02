@@ -41,6 +41,7 @@
   },
   "include": [
     "src/**/*",
-    "database/**/*"
-, "app.ts"  ]
+    "database/**/*",
+    "app.ts"
+  ]
 }
