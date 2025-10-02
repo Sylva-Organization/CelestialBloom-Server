@@ -37,4 +37,24 @@ describe('UsersController', () => {
         expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
     });
 
+
+    it('getOneUser >> should respond with 200 and return the user data when the user exists', async () => {
+        const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
+        const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
+        const res = createMockResponse();
+
+        await getOneUser(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({
+                    id: user!.id,
+                    email: user!.email
+                })
+            })
+        );
+    });
+
+
 });
