@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, afterAll, expect, jest } from '@jest/globals';
 import type { Request, Response } from 'express';
-import { getOneUser } from '../../src/controllers/UsersController.js';
+import { getOneUser, deleteUser } from '../../src/controllers/UsersController.js';
 import { setupTestDB, teardownTestDB } from '../setupTestDB_Connection.js';
 import { UserModel } from '../../src/models/UserModel.js';
 
@@ -37,7 +37,6 @@ describe('UsersController', () => {
         expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
     });
 
-
     it('getOneUser >> should respond with 200 and return the user data when the user exists', async () => {
         const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
         const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
@@ -56,5 +55,16 @@ describe('UsersController', () => {
         );
     });
 
+    it('deleteUser >> should respond with 200 and success message', async () => {
+        const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
+        const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
+        const res = createMockResponse();
+
+        await deleteUser(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({ message: "The user has been deleted successfully!" }));
+    });
 
 });
