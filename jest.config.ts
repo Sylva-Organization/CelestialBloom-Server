@@ -3,7 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 
+import dotenv from 'dotenv';
 import type { Config } from 'jest';
+dotenv.config({ path: ".env.test" });
 
 const config: Config = {
   // Preset para ESM
