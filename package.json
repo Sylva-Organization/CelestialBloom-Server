@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --runInBand --no-cache --detectOpenHandles",
+    "test:watch": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --watch --runInBand --no-cache --detectOpenHandles",
+    "test:coverage": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --coverage --runInBand --no-cache --detectOpenHandles",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -23,13 +25,19 @@
   "homepage": "https://github.com/Sylva-Organization/CelestialBloom-Server#readme",
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@jest/globals": "^30.2.0",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
+    "cross-env": "^10.1.0",
     "eslint": "^9.36.0",
+    "jest": "^30.2.0",
     "sequelize-cli": "^6.6.3",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.44.1"
   },
   "dependencies": {
