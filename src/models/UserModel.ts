@@ -20,7 +20,7 @@ export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    id!: number;
+    id!: string;
 
     @AllowNull(false)
     @Column
