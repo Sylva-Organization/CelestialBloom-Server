@@ -3,13 +3,18 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { UserModel } from "../models/UserModel.js";
+import configData from '../config/config.js';
 
-const JWT_SECRET = process.env["JWT_SECRET"]!;
-const JWT_EXPIRES = process.env["JWT_EXPIRES"] || "7d";
+const jwtConfig = configData.jwt;
+const JWT_SECRET = jwtConfig.jwtSecret;
+const JWT_EXPIRES = jwtConfig.jwtExpires;
+
 
 function signToken(payload: object) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    return token;
 }
+
 
 // register
 export const register = async (req: Request, res: Response) => {
