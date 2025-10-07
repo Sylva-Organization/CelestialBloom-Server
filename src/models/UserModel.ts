@@ -45,9 +45,9 @@ export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     role!: string;
 
     @AllowNull(false)
-    @Column
-    nick_name!: string;
-    unique: true;
+    @Column({unique: true})
+    nick_name!: string
+    
 
     @HasMany(() => PostModelClass, 'author_id')
     posts!: PostModel[];
