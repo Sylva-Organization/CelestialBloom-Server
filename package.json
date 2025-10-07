@@ -5,6 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsc && node dist/app.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -25,9 +26,9 @@
     "@eslint/js": "^9.36.0",
     "@types/bcrypt": "^6.0.0",
     "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.6.2",
     "eslint": "^9.36.0",
     "ts-node": "^10.9.2",
