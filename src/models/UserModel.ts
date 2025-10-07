@@ -6,7 +6,8 @@ import {
     AutoIncrement,
     AllowNull,
     DataType,
-    HasMany
+    HasMany,
+    Index
 } from "sequelize-typescript";
 import type { UserAttributes, UserCreationAttributes } from "../types/user.js";
 import type { PostModel } from './PostModel.js';
@@ -23,19 +24,28 @@ export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     id!: number;
 
     @AllowNull(false)
-    @Column
+    @Column({
+        validate: { notEmpty: true }
+    })
     first_name!: string;
 
     @AllowNull(false)
-    @Column
+    @Column({
+        validate: { notEmpty: true }
+    })
     last_name!: string;
 
+    @Index
     @AllowNull(false)
-    @Column
+    @Column({
+        validate: { notEmpty: true }
+    })
     email!: string;
 
     @AllowNull(false)
-    @Column
+    @Column({
+        validate: { notEmpty: true }
+    })
     password!: string;
 
     @Column({
@@ -44,11 +54,16 @@ export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     })
     role!: string;
 
+    @Index
     @AllowNull(false)
-    @Column({unique: true})
-    nick_name!: string
-    
+    @Column({
+        unique: true,
+        validate: { notEmpty: true }
+    })
+    nick_name!: string;
+
 
     @HasMany(() => PostModelClass, 'author_id')
     posts!: PostModel[];
 }
+
