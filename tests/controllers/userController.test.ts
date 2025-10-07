@@ -26,45 +26,63 @@ describe('UsersController', () => {
     afterAll(async () => {
         await teardownTestDB();
     });
+    describe('getOneUser', () => {
+        it('getOneUser >> should respond with 404 when the user does not exist', async () => {
+            const req = { params: { id: '999' } } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
 
-    it('getOneUser >> should respond with 404 when the user does not exist', async () => {
-        const req = { params: { id: '999' } } as unknown as Request<{ id: string }>;
-        const res = createMockResponse();
+            await getOneUser(req, res);
 
-        await getOneUser(req, res);
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
+        });
 
-        expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
-    });
+        it('getOneUser >> should respond with 200 and return the user data when the user exists', async () => {
+            const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
+            const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
 
-    it('getOneUser >> should respond with 200 and return the user data when the user exists', async () => {
-        const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
-        const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
-        const res = createMockResponse();
+            await getOneUser(req, res);
 
-        await getOneUser(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: expect.objectContaining({
-                    id: user!.id,
-                    email: user!.email
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.objectContaining({
+                        id: user!.id,
+                        email: user!.email
+                    })
                 })
-            })
-        );
+            );
+        });
+
+        it('getOneUser >> should respond with 500 and a execption occurs', async () => {
+            const req = { params: { id: '1' } } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
+            const original: typeof UserModel.findByPk = UserModel.findByPk;
+
+            UserModel.findByPk = async () => { throw new Error('Database error'); };
+
+            await getOneUser(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
+
+            UserModel.findByPk = original;
+        });
+    });
+    describe('deleteUser', () => {
+        it('deleteUser >> should respond with 200 and success message', async () => {
+            const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
+            const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
+
+            await deleteUser(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({ message: "The user has been deleted successfully!" }));
+        });
     });
 
-    it('deleteUser >> should respond with 200 and success message', async () => {
-        const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
-        const req = { params: { id: user!.id.toString() } } as unknown as Request<{ id: string }>;
-        const res = createMockResponse();
-
-        await deleteUser(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({ message: "The user has been deleted successfully!" }));
-    });
 
 });
