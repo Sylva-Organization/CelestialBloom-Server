@@ -1,19 +1,8 @@
 import type { Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { Op } from "sequelize";
+import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 import { UserModel } from "../models/UserModel.js";
-import configData from '../config/config.js';
-
-const jwtConfig = configData.jwt;
-const JWT_SECRET = jwtConfig.jwtSecret;
-const JWT_EXPIRES = jwtConfig.jwtExpires;
-
-
-function signToken(payload: object) {
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
-    return token;
-}
+// import { signToken } from '../utils/handleJWT.js'
 
 
 // register
@@ -27,7 +16,7 @@ export const register = async (req: Request, res: Response) => {
 
     const exists = await UserModel.findOne({
       where: { [Op.or]: [{ email }, { nick_name }] },
-    });
+    });            
     if (exists) {
       return res.status(400).json({ message: "Email or nickname already exists" });
     }
@@ -42,14 +31,11 @@ export const register = async (req: Request, res: Response) => {
       nick_name,
     });
 
-    const token = signToken({ id: user.id, role: user.role });
-    const safe = await UserModel.findByPk(user.id, { attributes: { exclude: ["password"] } });
-
-    return res.status(201).json({ data: safe, token });
-  } catch (error: any) {
-    return res.status(500).json({ message: error.message });
   }
-};
+  catch(error:any){
+    return res.status(500).json({message:error.message});
+  }
+}
 
 //login
 export const login = async (req: Request, res: Response) => {
@@ -67,10 +53,7 @@ export const login = async (req: Request, res: Response) => {
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = signToken({ id: user.id, role: user.role });
-    const safe = await UserModel.findByPk(user.id, { attributes: { exclude: ["password"] } });
-
-    return res.status(200).json({ data: safe, token });
+    
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
