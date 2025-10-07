@@ -43,7 +43,7 @@ export const verifyToken = async (
   try {
     if (!jwtSecret) throw new Error("JWT_SECRET not configured");
     return jwt.verify(token, jwtSecret) as JwtUserPayload;
-  } catch {
+  } catch(error) {
     return null;
   }
 };
