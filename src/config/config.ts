@@ -9,5 +9,10 @@ export default {
         host: process.env['HOST']!,
         port: 3306,
         dialect: process.env['DB_DIALECT'] as 'mysql',
+    },
+
+       jwt: {
+        jwtSecret: process.env['JWT_SECRET'] as string,
+        jwtExpires: process.env['JWT_EXPIRES'] as '7d'
     }
 };
