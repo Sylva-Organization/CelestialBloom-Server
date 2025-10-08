@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, afterAll, expect, jest } from '@jest/globals';
 import type { Request, Response } from 'express';
-import { getOneUser, deleteUser, getAllUsers } from '../../src/controllers/UsersController.js';
+import { getOneUser, deleteUser, getAllUsers, updateUser } from '../../src/controllers/UsersController.js';
 import { setupTestDB, teardownTestDB } from '../setupTestDB_Connection.js';
 import { UserModel } from '../../src/models/UserModel.js';
 
@@ -27,6 +27,22 @@ describe('UsersController', () => {
             email: 'test2@test.com',
             password: 'test123',
             nick_name: 'teste2',
+        });
+
+        await UserModel.create({
+            first_name: 'test 3 user controller',
+            last_name: 'Doe',
+            email: 'test3@test.com',
+            password: 'test123',
+            nick_name: 'teste3',
+        });
+
+        await UserModel.create({
+            first_name: 'test 4 user controller',
+            last_name: 'Doe',
+            email: 'test4@test.com',
+            password: 'test123',
+            nick_name: 'teste4',
         });
     });
 
@@ -162,5 +178,58 @@ describe('UsersController', () => {
 
             UserModel.findByPk = original;
         });
+    });
+    describe('updateUser', () => {
+        it('updateUser >> should respond with 200 and sucess message', async () => {
+            const user = await UserModel.findOne({ where: { nick_name: 'teste2' } });
+            const userUpdated = { first_name: "Name change" };
+            const req = { params: { id: user!.id.toString() }, body: userUpdated } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
+
+            await updateUser(req, res);
+
+            expect(res.status).toHaveBeenLastCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.objectContaining({
+                        id: user!.id,
+                        first_name: userUpdated.first_name
+                    })
+                })
+            );
+        });
+        it('updateUser >> should respond with 400 if email or nickname already exists', async () => {
+            const userThree = await UserModel.findOne({ where: { nick_name: 'teste3' } });
+            const userFour = await UserModel.findOne({ where: { email: 'test4@test.com' } });
+
+            const emailReq = {
+                params: { id: userThree!.id.toString() },
+                body: { email: userFour!.email }
+            } as unknown as Request<{ id: string }>;
+
+            const emailRes = createMockResponse();
+
+            await updateUser(emailReq, emailRes);
+
+            expect(emailRes.status).toHaveBeenCalledWith(400);
+            expect(emailRes.json).toHaveBeenCalledWith(
+                expect.objectContaining({ message: "Email already exists" })
+            );
+
+            const nickNameReq = {
+                params: { id: userThree!.id.toString() },
+                body: { nick_name: userFour!.nick_name }
+            } as unknown as Request<{ id: string }>;
+
+            const nickNameRes = createMockResponse();
+
+            await updateUser(nickNameReq, nickNameRes);
+
+            expect(nickNameRes.status).toHaveBeenCalledWith(400);
+            expect(nickNameRes.json).toHaveBeenCalledWith(
+                expect.objectContaining({ message: "Nickname already exists" })
+            );
+        });
+
     });
 });
