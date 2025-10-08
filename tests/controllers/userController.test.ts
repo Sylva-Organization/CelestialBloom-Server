@@ -15,18 +15,18 @@ describe('UsersController', () => {
     beforeAll(async () => {
         await setupTestDB();
         await UserModel.create({
-            first_name: 'test user controller get one user',
+            first_name: 'test user controller',
             last_name: 'Doe',
             email: 'test@test.com',
             password: '123456',
             nick_name: 'tester',
         });
         await UserModel.create({
-            first_name: 'test user controller get one user',
+            first_name: 'test 2 user controller',
             last_name: 'Doe',
-            email: 'test@test.com',
-            password: '123456',
-            nick_name: 'tester',
+            email: 'test2@test.com',
+            password: 'test123',
+            nick_name: 'teste2',
         });
     });
 
@@ -93,6 +93,22 @@ describe('UsersController', () => {
                 })
             );
         });
+        it('getAllUsers >> should respond with 200 and return filters users', async () => {
+            const req = { query: { search: 'test' } } as unknown as Request;
+            const res = createMockResponse();
+
+            await getAllUsers(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.arrayContaining([
+                        expect.objectContaining({ email: 'test2@test.com' })
+                    ])
+                })
+            );
+
+        })
     });
     describe('deleteUser', () => {
         it('deleteUser >> should respond with 200 and success message', async () => {
