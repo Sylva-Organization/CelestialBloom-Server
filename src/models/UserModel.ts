@@ -14,7 +14,8 @@ import { PostModel as PostModelClass } from './PostModel.js';
 
 @Table({
     tableName: "users",
-    paranoid: true
+    paranoid: true,
+    
 })
 export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     @PrimaryKey
@@ -45,9 +46,9 @@ export class UserModel extends Model<UserAttributes, UserCreationAttributes> {
     role!: string;
 
     @AllowNull(false)
-    @Column({unique: true})
-    nick_name!: string
-    
+    @Column ({unique: true})
+    nick_name!: string;
+
 
     @HasMany(() => PostModelClass, 'author_id')
     posts!: PostModel[];
