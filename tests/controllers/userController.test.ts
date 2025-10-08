@@ -146,6 +146,21 @@ describe('UsersController', () => {
 
             expect(res.status).toHaveBeenCalledWith(404);
             expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
-        })
+        });
+
+        it('deleteUser >> should respond with 500 and a execption occurs', async () => {
+            const req = { params: { id: '1' } } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
+            const original: typeof UserModel.findByPk = UserModel.findByPk;
+
+            UserModel.findByPk = async () => { throw new Error('Database error'); };
+
+            await deleteUser(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
+
+            UserModel.findByPk = original;
+        });
     });
 });
