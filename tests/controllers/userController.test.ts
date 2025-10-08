@@ -93,6 +93,7 @@ describe('UsersController', () => {
                 })
             );
         });
+
         it('getAllUsers >> should respond with 200 and return filters users', async () => {
             const req = { query: { search: 'test' } } as unknown as Request;
             const res = createMockResponse();
@@ -107,7 +108,8 @@ describe('UsersController', () => {
                     ])
                 })
             );
-        })
+        });
+
         it('getAllUsers >> should respond with 500 and a execption occurs', async () => {
             const req = { query: {} } as unknown as Request;
             const res = createMockResponse();
@@ -121,6 +123,7 @@ describe('UsersController', () => {
 
             UserModel.findAndCountAll = original;
         });
+
     });
     describe('deleteUser', () => {
         it('deleteUser >> should respond with 200 and success message', async () => {
@@ -134,5 +137,15 @@ describe('UsersController', () => {
             expect(res.json).toHaveBeenCalledWith(
                 expect.objectContaining({ message: "The user has been deleted successfully!" }));
         });
+
+        it('deleteUser >> should respond with 404 when the user does not exist', async () => {
+            const req = { params: { id: '999' } } as unknown as Request<{ id: string }>;
+            const res = createMockResponse();
+
+            await deleteUser(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
+        })
     });
 });
