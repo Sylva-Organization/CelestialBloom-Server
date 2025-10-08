@@ -107,8 +107,20 @@ describe('UsersController', () => {
                     ])
                 })
             );
-
         })
+        it('getAllUsers >> should respond with 500 and a execption occurs', async () => {
+            const req = { query: {} } as unknown as Request;
+            const res = createMockResponse();
+            const original: typeof UserModel.findAndCountAll = UserModel.findAndCountAll;
+            UserModel.findAndCountAll = async () => { throw new Error('Database error'); };
+
+            await getAllUsers(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
+
+            UserModel.findAndCountAll = original;
+        });
     });
     describe('deleteUser', () => {
         it('deleteUser >> should respond with 200 and success message', async () => {
