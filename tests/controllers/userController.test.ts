@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, afterAll, expect, jest } from '@jest/globals';
 import type { Request, Response } from 'express';
-import { getOneUser, deleteUser } from '../../src/controllers/UsersController.js';
+import { getOneUser, deleteUser, getAllUsers } from '../../src/controllers/UsersController.js';
 import { setupTestDB, teardownTestDB } from '../setupTestDB_Connection.js';
 import { UserModel } from '../../src/models/UserModel.js';
 
@@ -14,6 +14,13 @@ const createMockResponse = (): Response => {
 describe('UsersController', () => {
     beforeAll(async () => {
         await setupTestDB();
+        await UserModel.create({
+            first_name: 'test user controller get one user',
+            last_name: 'Doe',
+            email: 'test@test.com',
+            password: '123456',
+            nick_name: 'tester',
+        });
         await UserModel.create({
             first_name: 'test user controller get one user',
             last_name: 'Doe',
@@ -70,6 +77,23 @@ describe('UsersController', () => {
             UserModel.findByPk = original;
         });
     });
+    describe('getAllUsers', () => {
+        it('getAllUsers >> should respond with 200 and return all users', async () => {
+            const user = await UserModel.findOne();
+            const req = { query: {} } as unknown as Request;
+            const res = createMockResponse();
+
+            await getAllUsers(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.arrayContaining([
+                        expect.objectContaining({ id: user!.id, email: user!.email })])
+                })
+            );
+        });
+    });
     describe('deleteUser', () => {
         it('deleteUser >> should respond with 200 and success message', async () => {
             const user = await UserModel.findOne({ where: { email: 'test@test.com' } });
@@ -83,6 +107,4 @@ describe('UsersController', () => {
                 expect.objectContaining({ message: "The user has been deleted successfully!" }));
         });
     });
-
-
 });
