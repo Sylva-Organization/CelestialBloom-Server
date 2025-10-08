@@ -230,6 +230,26 @@ describe('UsersController', () => {
                 expect.objectContaining({ message: "Nickname already exists" })
             );
         });
+        it('updateUser >> should respond with 500 and a execption occurs', async () => {
+            const user = await UserModel.findOne({ where: { nick_name: 'teste2' } });
 
+            const req = {
+                params: { id: user!.id.toString() },
+                body: { first_name: 'AnyName' }
+            } as unknown as Request<{ id: string }>;
+
+            const res = createMockResponse();
+
+            const originalUpdate = UserModel.findByPk;
+
+            UserModel.findByPk = async () => { throw new Error('Database error'); };
+
+            await updateUser(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
+
+            UserModel.findByPk = originalUpdate;
+        });
     });
 });
