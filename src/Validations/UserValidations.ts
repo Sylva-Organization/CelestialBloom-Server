@@ -1,8 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
 
-// ============================================
-// TIPOS
-// ============================================
 interface ValidationError {
   field: string;
   message: string;
@@ -21,9 +18,7 @@ interface ValidationRule {
   custom?: (value: any) => string | null;
 }
 
-// ============================================
-// FUNCIONES DE VALIDACIÓN
-// ============================================
+
 
 const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,9 +33,6 @@ const sanitizeString = (str: string): string => {
   return str.trim();
 };
 
-// ============================================
-// VALIDADOR PRINCIPAL
-// ============================================
 
 const validateField = (
   fieldName: string,
@@ -112,7 +104,7 @@ const validateField = (
     }
   }
 
-  // Validación personalizada
+
   if (rules.custom) {
     const customError = rules.custom(value);
     if (customError) {
@@ -138,9 +130,6 @@ const validate = (data: any, schema: ValidationSchema): ValidationError[] => {
   return errors;
 };
 
-// ============================================
-// SCHEMAS DE VALIDACIÓN
-// ============================================
 
 const getAllUsersSchema: ValidationSchema = {
   page: {
@@ -182,9 +171,10 @@ const updateUserSchema: ValidationSchema = {
     type: "string",
     min: 2,
     max: 50,
+    pattern: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
     custom: (value: string) => {
-      if (value && /\d/.test(value)) {
-        return "first_name cannot contain numbers";
+      if (value && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(value)) {
+        return "first_name can only contain letters and spaces";
       }
       return null;
     },
@@ -194,9 +184,10 @@ const updateUserSchema: ValidationSchema = {
     type: "string",
     min: 2,
     max: 50,
+    pattern: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
     custom: (value: string) => {
-      if (value && /\d/.test(value)) {
-        return "last_name cannot contain numbers";
+      if (value && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(value)) {
+        return "last_name can only contain letters and spaces";
       }
       return null;
     },
@@ -227,9 +218,6 @@ const updateUserSchema: ValidationSchema = {
   },
 };
 
-// ============================================
-// MIDDLEWARES DE VALIDACIÓN
-// ============================================
 
 export const validateGetAllUsers = (
   req: Request,
