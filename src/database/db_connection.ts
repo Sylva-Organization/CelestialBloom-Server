@@ -19,6 +19,7 @@ export const db_connection = new Sequelize({
         underscored: true,
     },
     models: [UserModel, PostModel, CategoryModel, SubcategoryModel],
+    logging: process.env['NODE_ENV'] === "test" ? false : console.log
 });
 
 export default db_connection;
