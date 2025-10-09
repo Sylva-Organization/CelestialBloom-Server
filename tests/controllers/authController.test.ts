@@ -44,5 +44,29 @@ describe('AuthController', () => {
             expect(res.json).toHaveBeenCalledWith({ message: 'All fields are required' });
         });
 
+        it('register >> should respond 201 and return user and token', async () => {
+            const req = {
+                body: {
+                    first_name: 'Test',
+                    last_name: 'Doe',
+                    email: 'test2@test.com',
+                    password: 'test123',
+                    nick_name: 'test2'
+                }
+            } as unknown as Request;
+            const res = createMockResponse();
+
+            await register(req, res);
+            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.objectContaining({
+                        email: 'test2@test.com',
+                        nick_name: 'test2'
+                    }),
+                    token: expect.any(String)
+                })
+            );
+        });
     });
 });
