@@ -110,5 +110,31 @@ describe('AuthController', () => {
             expect(res.status).toHaveBeenCalledWith(400);
             expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: "Email or nickname already exists" }));
         });
+
+        it('register >> should respond 500 when a execption ocurrs', async () => {
+            const req = {
+                body: {
+                    first_name: 'test existing user',
+                    last_name: 'Doe',
+                    email: 'test@test.com',
+                    password: 'test123',
+                    nick_name: 'test123',
+                }
+            } as unknown as Request;
+            const res = createMockResponse();
+
+            const original: typeof UserModel.findByPk = UserModel.findByPk;
+
+            UserModel.findByPk = async () => {
+                throw new Error('Database error');
+            }
+
+            await register(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
+
+            UserModel.findByPk = original;
+        });
     });
 });
