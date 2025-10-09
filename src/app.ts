@@ -25,7 +25,7 @@ async function startServer() {
 console.log('✅ Conectado a la base de datos');
 
 // ⚠️ solo en desarrollo, temporalmente
-await db_connection.sync({ alter: true });
+await db_connection.sync();
 
 console.log('🧩 Modelos sincronizados');
 
