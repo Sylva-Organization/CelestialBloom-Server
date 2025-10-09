@@ -27,5 +27,9 @@
 
     "types": ["node"]
   },
-  "include": ["src/**/*", "database/**/*", "app.ts"]
+  "include": [
+    "src/**/*",
+    "database/**/*",
+    "app.ts"
+  ]
 }
