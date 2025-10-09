@@ -57,6 +57,7 @@ describe('AuthController', () => {
             const res = createMockResponse();
 
             await register(req, res);
+
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.json).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -67,6 +68,47 @@ describe('AuthController', () => {
                     token: expect.any(String)
                 })
             );
+        });
+
+        it('register >> should respond 400 if email already exists', async () => {
+            const userBD = await UserModel.findOne();
+            const req = {
+                body: {
+                    first_name: 'test existing user',
+                    last_name: 'Doe',
+                    email: userBD!.email,
+                    password: 'test123',
+                    nick_name: 'existing user',
+                }
+            } as unknown as Request;
+
+            const res = createMockResponse();
+
+            await register(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith(
+                expect.objectContaining({ message: "Email or nickname already exists" }));
+        });
+
+        it('register >> should respond 400 if nickname already exists', async () => {
+            const userBD = await UserModel.findOne();
+            const req = {
+                body: {
+                    first_name: 'test existing user',
+                    last_name: 'Doe',
+                    email: 'test@test.com',
+                    password: 'test123',
+                    nick_name: userBD!.nick_name,
+                }
+            } as unknown as Request;
+
+            const res = createMockResponse();
+
+            await register(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: "Email or nickname already exists" }));
         });
     });
 });
