@@ -1,46 +1,35 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
-    // File Layout
-    "outDir": "dist",
-    "rootDir": "./src",
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "target": "ES2022",
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "target": "ES2020",
+
+    "rootDir": "./src",
+    "outDir": "dist",
+
+    "strict": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "types": [
-      "node"
-    ],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
-    // Other Outputs
-    // Stricter Typechecking Options
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": true,
-    // Recommended Options
-    "strict": true,
+
     "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+
+    //  desactiva estas dos para evitar choque con reflect-metadata y decoradores
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": false,
+
+    "types": ["node"]
   },
   "include": [
     "src/**/*",
-    "database/**/*"
-, "app.ts"  ]
+    "database/**/*",
+    "app.ts"
+  ]
 }

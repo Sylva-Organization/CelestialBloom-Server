@@ -7,4 +7,5 @@ dist
 test_connection.ts
 test-connection.ts
 testModel.ts
-
+coverage
+teste_jwt.ts
