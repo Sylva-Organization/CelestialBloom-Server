@@ -2,7 +2,7 @@
 import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals'
 import type { Request, Response } from 'express';
 import { setupTestDB, teardownTestDB } from '../setupTestDB_Connection';
-import { register } from '../../src/controllers/AuthController.js';
+import { register, login } from '../../src/controllers/AuthController.js';
 import { UserModel } from '../../src/models/UserModel';
 
 const createMockResponse = (): Response => {
@@ -135,6 +135,21 @@ describe('AuthController', () => {
             expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
 
             UserModel.findByPk = original;
+        });
+    });
+
+    describe('login', () => {
+        it.each([
+            [{ identifier: '', password: 'test123' }],
+            [{ identifier: 'test@test.com', password: '' }]
+        ])('login >> should respond 400 if identifier or password are missisng', async (partBody) => {
+            const req = { body: partBody } as unknown as Request;
+            const res = createMockResponse();
+
+            await login(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({ message: "identifier and password are required" });
         });
     });
 });
