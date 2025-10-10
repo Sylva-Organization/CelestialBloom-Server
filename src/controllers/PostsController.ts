@@ -4,7 +4,7 @@ import { PostModel } from "../models/PostModel.js";
 import { UserModel } from "../models/UserModel.js";
 import { CategoryModel } from "../models/CategoryModel.js";
 
-// GET /posts?search=&page=&limit=&author_id=&category_id=
+// GET 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const page = Math.max(1, Number(req.query["page"] as string) || 1);
@@ -77,6 +77,51 @@ export const getOnePost = async (req: Request<{ id: string }>, res: Response) =>
 
     return res.status(200).json({ data: post });
   } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// POST 
+export const createPost = async (req: Request, res: Response) => {
+  try {
+    const { title, content, image, author_id, category_id } = req.body as {
+      title?: string;
+      content?: string;
+      image?: string;
+      author_id?: number;
+      category_id?: number;
+    };
+
+    if (!title || !content || !image || !author_id || !category_id) {
+      return res.status(400).json({ message: "title, content, image, author_id and category_id are required" });
+    }
+
+    // validar existencia de autor y categoría
+    const [author, category] = await Promise.all([
+      UserModel.findByPk(Number(author_id)),
+      CategoryModel.findByPk(Number(category_id)),
+    ]);
+
+    if (!author) return res.status(400).json({ message: "Author (author_id) does not exist" });
+    if (!category) return res.status(400).json({ message: "Category (category_id) does not exist" });
+
+    const createdPost = await PostModel.create({
+      title,
+      content,
+      image,
+      author_id: Number(author_id),
+      category_id: Number(category_id),
+    });
+
+    const createdWithIncludes = await PostModel.findByPk(createdPost.id, {
+      include: [
+        { model: UserModel, as: "author", attributes: { exclude: ["password"] } },
+        { model: CategoryModel, as: "category" },
+      ],
+    });
+
+    return res.status(201).json({ data: createdWithIncludes });
+  } catch (error:any) {
     return res.status(500).json({ message: error.message });
   }
 };
