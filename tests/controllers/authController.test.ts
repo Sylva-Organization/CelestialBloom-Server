@@ -4,6 +4,8 @@ import type { Request, Response } from 'express';
 import { setupTestDB, teardownTestDB } from '../setupTestDB_Connection';
 import { register, login } from '../../src/controllers/AuthController.js';
 import { UserModel } from '../../src/models/UserModel';
+import { Op } from 'sequelize';
+import bcrypt from 'bcryptjs';
 
 const createMockResponse = (): Response => {
     const res = {} as Response;
@@ -15,11 +17,12 @@ const createMockResponse = (): Response => {
 describe('AuthController', () => {
     beforeAll(async () => {
         await setupTestDB();
+        const hashedPassword = await bcrypt.hash('test123', 10);
         await UserModel.create({
             first_name: 'test register controller',
             last_name: 'Doe',
             email: 'test3@test.com',
-            password: 'test123',
+            password: hashedPassword,
             nick_name: 'teste3',
         });
     });
@@ -150,6 +153,25 @@ describe('AuthController', () => {
 
             expect(res.status).toHaveBeenCalledWith(400);
             expect(res.json).toHaveBeenCalledWith({ message: "identifier and password are required" });
+        });
+
+        it('login >> should respond 401 when the credentials are invalid', async () => {
+            const req = { body: { identifier: 'notexist@test.com', password: 'test123' } } as unknown as Request;
+            const res = createMockResponse();
+
+            await login(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(401);
+            expect(res.json).toHaveBeenCalledWith({ message: "Invalid credentials" });
+        });
+
+        it('login >> should respond 200 when the credentials are valid', async () => {
+            const req = { body: { identifier: 'test3@test.com', password: 'test123' } } as unknown as Request;
+            const res = createMockResponse();
+
+            await login(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
         });
     });
 });
