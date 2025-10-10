@@ -5,7 +5,7 @@ import {
     updateUser,
     deleteUser
 }from '../controllers/UsersController.js';
-import { validateDeleteUser, validateGetAllUsers, validateUpdateUser, validateUserId } from '../Validations/UserValidations.js';
+import { validateDeleteUser, validateGetAllUsers, validateUpdateUser, validateUserId } from '../validations/UserValidations.js';
 
 
 const UserRouter = Router();
