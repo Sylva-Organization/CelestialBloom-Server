@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { Op } from "sequelize";
 import { UserModel } from "../models/UserModel.js";
 import { PostModel } from "../models/PostModel.js";
+import bcrypt from "bcryptjs";
 
 // Get 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -99,9 +100,9 @@ export const updateUser = async (req: Request<{ id: string }>, res: Response) =>
     if (nick_name !== undefined) updateData.nick_name = nick_name;
 
     if (password !== undefined && password !== null && password !== "") {
-      // const hashed = await bcrypt.hash(password, 10); // cuando activéis auth
-      // updateData.password = hashed;
-      updateData.password = password; // aqui se esta guardando pero en texto plano, quitar cuando active bcrypt
+      const hashed = await bcrypt.hash(password, 10); 
+      updateData.password = hashed;
+      
     }
 
     // 4) actualizar y devolver sin password (y con posts, opcional)
@@ -114,7 +115,7 @@ export const updateUser = async (req: Request<{ id: string }>, res: Response) =>
 
     return res.status(200).json({ data: updated });
   } catch (error: any) {
-    return res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
