@@ -30,6 +30,7 @@ describe('AuthController', () => {
         await teardownTestDB();
     });
 
+    // TODO: uma vez que tenha as validações criadas, criar um teste para criação de novo usuario com erros nos campos de nome, email e nickname.
     describe('register', () => {
         it.each([
             [{ first_name: '', last_name: 'Doe', email: 'test@test.com', password: 'test123', nick_name: 'teste' }],

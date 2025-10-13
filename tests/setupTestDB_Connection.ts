@@ -3,7 +3,7 @@ import { UserModel } from '../src/models/UserModel.js';
 
 //prepares the environment before the test
 export const setupTestDB = async () => {
-  await db_connection.sync();//{ force: true }
+  await db_connection.sync({ force: true });//{ force: true }
 };
 
 //cleans the environment after the test
