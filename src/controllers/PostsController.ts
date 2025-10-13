@@ -1,10 +1,24 @@
 import type { Request, Response } from "express";
 import { Op } from "sequelize";
+import type { IncludeOptions } from "sequelize";
 import { PostModel } from "../models/PostModel.js";
 import { UserModel } from "../models/UserModel.js";
 import { CategoryModel } from "../models/CategoryModel.js";
 
-// GET 
+
+const POST_INCLUDES: IncludeOptions[]= [
+    {
+        model: UserModel,
+        as: "author",
+        attributes: {exclude: ["password"]},
+    },
+    {
+        model: CategoryModel,
+        as: "category",
+    },
+];
+
+
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const page = Math.max(1, Number(req.query["page"] as string) || 1);
@@ -35,17 +49,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
       offset,
       limit,
       order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: UserModel,
-          as: "author",
-          attributes: { exclude: ["password"] },
-        },
-        {
-          model: CategoryModel,
-          as: "category",
-        },
-      ],
+      include: POST_INCLUDES,
     });
 
     return res.status(200).json({ data: rows, meta: { page, limit, total: count } });
@@ -54,23 +58,13 @@ export const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
-// GET /posts/:id
+
 export const getOnePost = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const id = Number(req.params.id);
 
     const post = await PostModel.findByPk(id, {
-      include: [
-        {
-          model: UserModel,
-          as: "author",
-          attributes: { exclude: ["password"] },
-        },
-        {
-          model: CategoryModel,
-          as: "category",
-        },
-      ],
+      include: POST_INCLUDES,
     });
 
     if (!post) return res.status(404).json({ message: "Post not found" });
@@ -96,7 +90,7 @@ export const createPost = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "title, content, image, author_id and category_id are required" });
     }
 
-    // validar existencia de autor y categoría
+    // validate existance of author and category
     const [author, category] = await Promise.all([
       UserModel.findByPk(Number(author_id)),
       CategoryModel.findByPk(Number(category_id)),
@@ -114,10 +108,7 @@ export const createPost = async (req: Request, res: Response) => {
     });
 
     const createdWithIncludes = await PostModel.findByPk(createdPost.id, {
-      include: [
-        { model: UserModel, as: "author", attributes: { exclude: ["password"] } },
-        { model: CategoryModel, as: "category" },
-      ],
+      include: POST_INCLUDES,
     });
 
     return res.status(201).json({ data: createdWithIncludes });
@@ -126,7 +117,7 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
-// PATCH/PUT /posts/:id
+// PATCH/PUT 
 export const updatePost = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -169,10 +160,7 @@ export const updatePost = async (req: Request<{ id: string }>, res: Response) =>
     await post.update(updateData);
 
     const updated = await PostModel.findByPk(id, {
-      include: [
-        { model: UserModel, as: "author", attributes: { exclude: ["password"] } },
-        { model: CategoryModel, as: "category" },
-      ],
+      include: POST_INCLUDES,
     });
 
     return res.status(200).json({ data: updated });
@@ -181,7 +169,6 @@ export const updatePost = async (req: Request<{ id: string }>, res: Response) =>
   }
 };
 
-// DELETE /posts/:id (soft delete por paranoid: true)
 export const deletePost = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const id = Number(req.params.id);
