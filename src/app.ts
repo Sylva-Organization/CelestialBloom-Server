@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import 'reflect-metadata'; // ya esta
+import 'reflect-metadata'; 
 import express from 'express';
 import type { Request, Response } from 'express';
 import cors from 'cors';
@@ -16,10 +16,15 @@ app.use(express.json());
 
 // ====== Rutas ======
 app.get('/', (_req: Request, res: Response) => {
-  res.send('Hola API');
+  res.json({
+    name: 'API Celestial Bloom',
+    version: '1.0.0',
+    status: 'running'
+  });
+  
 });
 app.use('/users', UserRouter);
-app.use('/post', PostRouter);
+app.use('/posts', PostRouter);
 app.use('/auth', AuthRouter); 
 
 // ====== Función de inicialización ======
