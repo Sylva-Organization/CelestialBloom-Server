@@ -8,6 +8,7 @@ import {
     ForeignKey,
     BelongsTo,
     Index,
+    DataType,
 } from "sequelize-typescript";
 import type { PostAttributes, PostCreationAttributes } from "../types/post.js";
 import type { UserModel } from './UserModel.js';
@@ -30,7 +31,7 @@ export class PostModel extends Model<PostAttributes, PostCreationAttributes> {
     title!: string;
 
     @AllowNull(false)
-    @Column
+    @Column(DataType.TEXT)
     content!: string;
 
     @AllowNull(false)
