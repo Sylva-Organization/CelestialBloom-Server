@@ -1,6 +1,15 @@
 import type { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/UserModel.js";
 import { verifyToken } from "../utils/handleJWT.js";
+import type { UserAttributes } from "../types/user.js";
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: UserAttributes;
+        }
+    }
+}
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -9,15 +18,13 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         }
         const userToken = <string>req.headers.authorization.split(" ").pop()
         const dataToken = await verifyToken(userToken)
-        
-        if (dataToken !== null && typeof dataToken !== "string") {            
+
+        if (dataToken !== null && typeof dataToken !== "string") {
             const user = await UserModel.findByPk(dataToken.id)
-            req.body.user = user
+            req.user = user as UserAttributes;
             next()
-
         }
-
-    } catch (error:any) {
+    } catch (error: any) {
         res.status(401).json({ error: "NOT_SESSION", message: error.message })
     }
 };
