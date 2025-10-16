@@ -6,16 +6,16 @@ import { UserModel } from "../models/UserModel.js";
 import { CategoryModel } from "../models/CategoryModel.js";
 
 
-const POST_INCLUDES: IncludeOptions[]= [
-    {
-        model: UserModel,
-        as: "author",
-        attributes: {exclude: ["password"]},
-    },
-    {
-        model: CategoryModel,
-        as: "category",
-    },
+const POST_INCLUDES: IncludeOptions[] = [
+  {
+    model: UserModel,
+    as: "author",
+    attributes: { exclude: ["password"] },
+  },
+  {
+    model: CategoryModel,
+    as: "category",
+  },
 ];
 
 
@@ -78,7 +78,8 @@ export const getOnePost = async (req: Request<{ id: string }>, res: Response) =>
 // POST 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const { title, content, image, author_id, category_id } = req.body as {
+    const author_id = req.user?.id
+    const { title, content, image, category_id } = req.body as {
       title?: string;
       content?: string;
       image?: string;
@@ -112,7 +113,7 @@ export const createPost = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json({ data: createdWithIncludes });
-  } catch (error:any) {
+  } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
 };
@@ -124,8 +125,8 @@ export const updatePost = async (req: Request<{ id: string }>, res: Response) =>
 
     const post = await PostModel.findByPk(id);
     if (!post) return res.status(404).json({ message: "Post not found" });
-
-    const { title, content, image, author_id, category_id } = req.body as {
+    const author_id = req.user?.id;
+    const { title, content, image, category_id } = req.body as {
       title?: string;
       content?: string;
       image?: string;
@@ -176,11 +177,10 @@ export const deletePost = async (req: Request<{ id: string }>, res: Response) =>
     const post = await PostModel.findByPk(id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    await PostModel.destroy({ where: { id } }); 
+    await PostModel.destroy({ where: { id } });
 
     return res.status(200).json({ message: "The post has been deleted successfully!" });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
 };
-
