@@ -1,1 +1,11 @@
 node_modules
+.env*
+dist
+*.js
+*.js.map
+*.d.ts
+test_connection.ts
+test-connection.ts
+testModel.ts
+coverage
+teste_jwt.ts
